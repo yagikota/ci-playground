@@ -2,15 +2,17 @@ on:
   push:
     branches:
       - main
-  # pull_request:
-    # types:
-    #   - opened # default
-    #   - reopened # default
-    #   - synchronize # default
-    #   - ready_for_review
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened # default
+      - reopened # default
+      - synchronize # default
+      - ready_for_review
 jobs:
   echo:
-    # if: github.event.pull_request.draft == false
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
       - name: Greeting
