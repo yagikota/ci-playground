@@ -13,6 +13,6 @@ jobs:
       - name: Greeting
         run: echo "Hello World pull_request"
       - name: Sleep
-        run: sleep $(( ($RANDOM % 100) / 10 ))
+        run: sleep $(($RANDOM % 30))
       - name: Greeting
         run: echo "Goodbye World pull_request"
