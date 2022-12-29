@@ -1,0 +1,16 @@
+on:
+  pull_request:
+    types:
+      - opened # default
+      - reopened # default
+      - synchronize # default
+      - ready_for_review
+jobs:
+  echo-pull-request:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Greeting
+        run: echo "Hello World pull_request"
+      - name: Greeting
+        run: echo "Goodbye World pull_request"
