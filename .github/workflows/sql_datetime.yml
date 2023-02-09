@@ -1,10 +1,10 @@
 name: sql datetime check
 on:
   # push:
-    # branches:
-    #   - main
-    # paths:
-    #   - "migrations/**"
+  # branches:
+  #   - main
+  # paths:
+  #   - "migrations/**"
   pull_request:
     # paths:
     #   - "migrations/**"
@@ -27,12 +27,14 @@ jobs:
         run: |
           echo "${{steps.latest_sql_file.outputs.latest_sql_file}}"
 
-# 2. 作成したmigrationファイル名が1で取得した最新のmigrationファイル名よりも後になっているか確認
+  # 2. 作成したmigrationファイル名が1で取得した最新のmigrationファイル名よりも後になっているか確認
   check_diff:
     runs-on: ubuntu-latest
     needs: check_latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: oldest added sql file
         id: oldest_added_sql_file
         run: |
