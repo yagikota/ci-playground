@@ -12,6 +12,8 @@ on:
 jobs:
   check_latest:
     runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.latest_sql_file.outputs.latest_sql_file }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -19,7 +21,15 @@ jobs:
       - name: Get latest SQL file
         id: latest_sql_file
         run: |
-          echo "latest_sql_file= $(ls migrations | tail -n 1)" >> $GITHUB_OUTPUT
+          echo "latest_sql_file=$(ls migrations | tail -n 1)" >> $GITHUB_OUTPUT
       - name: Echo latest SQL file
         run: |
           echo "${{steps.latest_sql_file.outputs.latest_sql_file}}"
+
+  check_diff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Echo latest SQL file
+        run: |
+          echo "${{needs.check_latest.outputs.output1}}"
