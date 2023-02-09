@@ -5,6 +5,9 @@ on:
       - main
     paths:
       - "migrations/**"
+  pull_request:
+    paths:
+      - "migrations/**"
 
 jobs:
   check_latest:
