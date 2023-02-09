@@ -9,25 +9,16 @@ on:
 jobs:
   check_latest:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Get all SQL files
-        run: |
-          SQL_FILES=$(find migrations -name "*.sql")
-          echo $SQL_FILES
+      - uses: actions/checkout@v3
       - name: Get latest SQL file
+        id: latest_sql_file
         run: |
-          LATEST_SQL_FILE=$(ls -t $SQL_FILES | head -n 1)
+          git fetch origin ${{ github.base_ref }} --depth=1
+          LATEST_SQL_FILE = $(ls migrations | tail -n 1)
+          echo "latest_sql_file=$LATEST_SQL_FILE" >> $GITHUB_OUTPUT
+          echo "latest sql file name"
           echo $LATEST_SQL_FILE
-      - name: Check if added SQL file is latest
+      - name: Echo latest SQL file
         run: |
-          ADDED_SQL_FILE=$(echo $GITHUB_SHA)_foo.sql
-          if [ "$LATEST_SQL_FILE" = "$ADDED_SQL_FILE" ]; then
-            echo "Added SQL file is latest."
-          else
-            echo "Added SQL file is NOT latest."
-            exit 1
-          fi
+          echo "${{steps.latest_sql_file.outputs.latest_sql_file}}"
