@@ -1,11 +1,8 @@
 name: sql datetime check
 on:
-  pull_request:
-    types:
-      - opened # default
-      - reopened # default
-      - synchronize # default
-      - ready_for_review
+  push:
+    branches:
+      - main
     paths:
       - "migrations/**"
 
