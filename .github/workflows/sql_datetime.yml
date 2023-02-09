@@ -18,10 +18,7 @@ jobs:
         id: latest_sql_file
         run: |
           git fetch origin ${{ github.base_ref }} --depth=1
-          LATEST_SQL_FILE = $(ls migrations | tail -n 1)
-          echo "latest_sql_file=$LATEST_SQL_FILE" >> $GITHUB_OUTPUT
-          echo "latest sql file name"
-          echo $LATEST_SQL_FILE
+          echo "latest_sql_file= $(ls migrations | tail -n 1)" >> $GITHUB_OUTPUT
       - name: Echo latest SQL file
         run: |
           echo "${{steps.latest_sql_file.outputs.latest_sql_file}}"
