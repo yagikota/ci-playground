@@ -32,9 +32,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: check_latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Switch to pull request branch
+        uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+      - name: Fetch base branch
+        run: git fetch origin ${{ github.base_ref }}
       - name: oldest added sql file
         id: oldest_added_sql_file
         run: |
