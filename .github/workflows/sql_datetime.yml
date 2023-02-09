@@ -16,16 +16,17 @@ jobs:
     outputs:
       output1: ${{ steps.latest_sql_file.outputs.latest_sql_file }}
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout base branch
+        uses: actions/checkout@v3
         with:
           ref: ${{ github.base_ref }} # PR先のブランチをチェックアウト
       - name: Get latest SQL file
         id: latest_sql_file
         run: |
           echo "latest_sql_file=$(ls migrations | tail -n 1)" >> $GITHUB_OUTPUT
-      - name: Echo latest SQL file
-        run: |
-          echo "${{steps.latest_sql_file.outputs.latest_sql_file}}"
+      # - name: Echo latest SQL file
+      #   run: |
+      #     echo "${{steps.latest_sql_file.outputs.latest_sql_file}}"
 
   # 2. 作成したmigrationファイル名が1で取得した最新のmigrationファイル名よりも後になっているか確認
   check_diff:
@@ -38,20 +39,20 @@ jobs:
           ref: ${{ github.head_ref }}
       - name: Fetch base branch
         run: git fetch origin ${{ github.base_ref }}
-      - name: oldest added sql file
-        id: oldest_added_sql_file
+      - name: Find oldest added sql file
+        id: find_oldest_added_sql_file
         run: |
-          echo "added_sql_file=$(git diff  origin/${{ github.base_ref }} ${{ github.head_ref }}  --name-only -- '***.sql' | head -n 1)" >> $GITHUB_OUTPUT
-          echo "${{steps.oldest_added_sql_file.outputs.added_sql_file}}"
+          echo "added_sql_files=$(git diff  origin/${{ github.base_ref }} ${{ github.head_ref }}  --name-only -- '***.sql')" >> $GITHUB_OUTPUT
+          echo "oldest_added_sql_file=$(${{steps.find_oldest_added_sql_file.outputs.added_sql_fils}}| head -n 1)" >> $GITHUB_OUTPUT
       - name: Compare sql files
         run: |
           echo "oldest added sql file"
-          echo "${{steps.oldest_added_sql_file.outputs.added_sql_file}}"
+          echo "${{steps.find_oldest_added_sql_file.outputs.added_sql_file}}"
           echo "latest SQL file"
           echo "${{needs.check_latest.outputs.output1}}"
-          if [ ${{needs.check_latest.outputs.output1}} < ${{steps.oldest_added_sql_file.outputs.added_sql_file}} ]; then
+          if [ ${{needs.check_latest.outputs.output1}} < ${{steps.find_oldest_added_sql_file.outputs.oldest_added_sql_file}} ]; then
             echo "Added SQL file is latest."
           else
-            echo "Added SQL file is NOT latest."
+            echo "Added SQL file is NOT latest.\nfile: ${{steps.find_oldest_added_sql_file.outputs.added_sql_files}}"
             exit 1
           fi
