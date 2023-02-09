@@ -1,23 +1,24 @@
 name: sql datetime check
 on:
   push:
-    branches:
-      - main
-    paths:
-      - "migrations/**"
+    # branches:
+    #   - main
+    # paths:
+    #   - "migrations/**"
   pull_request:
-    paths:
-      - "migrations/**"
+    # paths:
+    #   - "migrations/**"
 
 jobs:
   check_latest:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          repository: ${{ github.base_ref }} # PR先のブランチをチェックアウト
       - name: Get latest SQL file
         id: latest_sql_file
         run: |
-          git fetch origin ${{ github.base_ref }} --depth=1
           echo "latest_sql_file= $(ls migrations | tail -n 1)" >> $GITHUB_OUTPUT
       - name: Echo latest SQL file
         run: |
