@@ -10,6 +10,7 @@ on:
     #   - "migrations/**"
 
 jobs:
+  # 1. mainブランチから最新のmigrationファイルの名前を取得
   check_latest:
     runs-on: ubuntu-latest
     outputs:
@@ -26,11 +27,18 @@ jobs:
         run: |
           echo "${{steps.latest_sql_file.outputs.latest_sql_file}}"
 
+# 2. 作成したmigrationファイル名が1で取得した最新のmigrationファイル名よりも後になっているか確認
   check_diff:
     runs-on: ubuntu-latest
     needs: check_latest
     steps:
       - uses: actions/checkout@v3
-      - name: Echo latest SQL file Again
+      - name: oldest added sql file
+        id: oldest_added_sql_file
         run: |
+          echo "added_sql_files=$(git diff main --name-only -- '***.sql' | head -n 1)" >> $GITHUB_OUTPUT
+          echo "oldest_added_sql_file=$(ls migrations | tail -n 1)" >> $GITHUB_OUTPUT
+      - name: Compare sql files
+        run: |
+          echo "added_sql_files=$(git diff main --name-only -- '***.sql')" >> $GITHUB_OUTPUT
           echo "${{needs.check_latest.outputs.output1}}"
