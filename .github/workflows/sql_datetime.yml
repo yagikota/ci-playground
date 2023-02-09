@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          repository: ${{ github.base_ref }} # PR先のブランチをチェックアウト
+          ref: ${{ github.base_ref }} # PR先のブランチをチェックアウト
       - name: Get latest SQL file
         id: latest_sql_file
         run: |
