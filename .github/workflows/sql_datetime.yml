@@ -1,0 +1,36 @@
+name: sql datetime check
+on:
+  pull_request:
+    types:
+      - opened # default
+      - reopened # default
+      - synchronize # default
+      - ready_for_review
+    paths:
+      - "migrations/**"
+
+jobs:
+  check_latest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Get all SQL files
+        run: |
+          SQL_FILES=$(find migrations -name "*.sql")
+          echo $SQL_FILES
+      - name: Get latest SQL file
+        run: |
+          LATEST_SQL_FILE=$(ls -t $SQL_FILES | head -n 1)
+          echo $LATEST_SQL_FILE
+      - name: Check if added SQL file is latest
+        run: |
+          ADDED_SQL_FILE=$(echo $GITHUB_SHA)_foo.sql
+          if [ "$LATEST_SQL_FILE" = "$ADDED_SQL_FILE" ]; then
+            echo "Added SQL file is latest."
+          else
+            echo "Added SQL file is NOT latest."
+            exit 1
+          fi
