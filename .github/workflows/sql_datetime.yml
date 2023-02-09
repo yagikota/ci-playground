@@ -43,7 +43,7 @@ jobs:
         id: find_oldest_added_sql_file
         run: |
           echo "added_sql_files=$(git diff  origin/${{ github.base_ref }} ${{ github.head_ref }}  --name-only -- '***.sql')" >> $GITHUB_OUTPUT
-          echo "oldest_added_sql_file=$( echo ${{steps.find_oldest_added_sql_file.outputs.added_sql_files}} | head -n 1)" >> $GITHUB_OUTPUT
+          echo "oldest_added_sql_file=$( echo "${{steps.find_oldest_added_sql_file.outputs.added_sql_files}}" | head -n 1)" >> $GITHUB_OUTPUT
       - name: Compare sql files
         run: |
           echo "oldest added sql file"
