@@ -27,7 +27,8 @@ jobs:
           echo "${{steps.latest_sql_file.outputs.latest_sql_file}}"
 
   check_diff:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest]
+    needs: check_latest
     steps:
       - uses: actions/checkout@v3
       - name: Echo latest SQL file Again
