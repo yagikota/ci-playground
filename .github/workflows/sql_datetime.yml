@@ -36,9 +36,16 @@ jobs:
       - name: oldest added sql file
         id: oldest_added_sql_file
         run: |
-          echo "added_sql_files=$(git diff main --name-only -- '***.sql' | head -n 1)" >> $GITHUB_OUTPUT
-          echo "oldest_added_sql_file=$(ls migrations | tail -n 1)" >> $GITHUB_OUTPUT
+          echo "added_sql_file=$(git diff main --name-only -- '***.sql' | head -n 1)" >> $GITHUB_OUTPUT
       - name: Compare sql files
         run: |
-          echo "added_sql_files=$(git diff main --name-only -- '***.sql')" >> $GITHUB_OUTPUT
+          echo "oldest added sql file"
+          echo "${{steps.oldest_added_sql_file.outputs.added_sql_file}}"
+          echo "latest SQL file"
           echo "${{needs.check_latest.outputs.output1}}"
+          if [ ${{needs.check_latest.outputs.output1}} < ${{steps.oldest_added_sql_file.outputs.added_sql_file}} ]; then
+            echo "Added SQL file is latest."
+          else
+            echo "Added SQL file is NOT latest."
+            exit 1
+          fi
