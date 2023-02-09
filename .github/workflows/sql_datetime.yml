@@ -1,6 +1,6 @@
 name: sql datetime check
 on:
-  push:
+  # push:
     # branches:
     #   - main
     # paths:
@@ -30,6 +30,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Echo latest SQL file
+      - name: Echo latest SQL file Again
         run: |
           echo "${{needs.check_latest.outputs.output1}}"
