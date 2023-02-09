@@ -47,7 +47,7 @@ jobs:
       - name: Compare sql files
         run: |
           echo "oldest added sql file"
-          echo "${{steps.find_oldest_added_sql_file.outputs.added_sql_file}}"
+          echo "${{steps.find_oldest_added_sql_file.outputs.oldest_added_sql_file}}"
           echo "latest SQL file"
           echo "${{needs.check_latest.outputs.output1}}"
           if [ ${{needs.check_latest.outputs.output1}} < ${{steps.find_oldest_added_sql_file.outputs.oldest_added_sql_file}} ]; then
