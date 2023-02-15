@@ -15,15 +15,17 @@ jobs:
   latest_migration_file:
     runs-on: ubuntu-latest
     outputs:
-      date_time: ${{ steps.latest_migration_file_date_time.outputs.date_time }}
+      file_name: ${{ steps.latest_migration_file.outputs.file_name }}
+      date_time: ${{ steps.latest_migration_file.outputs.date_time }}
     steps:
       - name: Checkout base branch
         uses: actions/checkout@v3
         with:
           ref: ${{ github.base_ref }} # PR先のブランチをチェックアウト
       - name: Get the date time of latest migration file date time
-        id: latest_migration_file_date_time
+        id: latest_migration_file
         run: |
+          echo "file_name=$(ls migrations | tail -n 1)" >> $GITHUB_OUTPUT
           echo "date_time=$(ls migrations | tail -n 1 | cut -d '-' -f1)" >> $GITHUB_OUTPUT
   # 2. 作成したmigrationファイル名が適切か判定
   check_date_time_constraints:
@@ -52,9 +54,8 @@ jobs:
         run: |
           echo "Added migration files:
           $(git diff origin/${{ github.base_ref }} ${{ github.head_ref }} --name-only --relative=migrations '***.sql')"
-          echo "The date time of latest migration file: ${{needs.latest_migration_file.outputs.date_time}}"
-          echo "The date time of oldest added migration file: ${{steps.added_migration_files.outputs.oldest_date_time}}"
-          echo "The date time of newest added migration file: ${{steps.added_migration_files.outputs.newest_date_time}}"
+          echo "Latest migration file:
+          ${{needs.latest_migration_file.outputs.file_name}}"
           if [ ${{needs.latest_migration_file.outputs.date_time}} \< ${{steps.added_migration_files.outputs.oldest_date_time}} ] && [ ${{steps.added_migration_files.outputs.newest_date_time}} \< ${{steps.date.outputs.future_limit}} ]; then
             echo "The name of added migration files is correct."
           else
