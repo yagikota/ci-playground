@@ -13,6 +13,7 @@ on:
 jobs:
   # 1. developブランチから最新のmigrationファイルの作成日時を取得
   latest_migration_file:
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     outputs:
       file_name: ${{ steps.latest_migration_file.outputs.file_name }}
