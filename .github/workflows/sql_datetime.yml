@@ -50,6 +50,8 @@ jobs:
         run: echo "today_limit=$(date '+%Y%m%d235959')" >> $GITHUB_OUTPUT
       - name: Compare date time
         run: |
+          echo "Added migration files:
+          $(git diff origin/${{ github.base_ref }} ${{ github.head_ref }} --name-only --relative=migrations '***.sql')"
           echo "The date time of latest migration file: ${{needs.latest_migration_file.outputs.date_time}}"
           echo "The date time of oldest added migration file: ${{steps.added_migration_files.outputs.oldest_date_time}}"
           echo "The date time of newest added migration file: ${{steps.added_migration_files.outputs.newest_date_time}}"
@@ -62,8 +64,5 @@ jobs:
               - It should be in the future compared to date time of the existing file.
               - It should be today's date time.
             So, is should be greater than ${{needs.latest_migration_file.outputs.date_time}} and less than or equal to ${{steps.date.outputs.today_limit}}."
-            echo "
-            Added migration files:
-            $(git diff origin/${{ github.base_ref }} ${{ github.head_ref }} --name-only --relative=migrations '***.sql')"
             exit 1
           fi
