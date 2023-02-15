@@ -64,6 +64,6 @@ jobs:
             The date time of added migration file must meet the following requirements:
               - It should be in the future compared to date time of the existing file.
               - It should be today's date time.
-            So, is should be greater than ${{needs.latest_migration_file.outputs.date_time}} and less than or equal to ${{steps.date.outputs.future_limit}}."
+            So, it should be greater than ${{needs.latest_migration_file.outputs.date_time}} and less than or equal to ${{steps.date.outputs.future_limit}}."
             exit 1
           fi
