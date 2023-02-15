@@ -45,7 +45,7 @@ jobs:
           echo "${{steps.find_oldest_added_sql_file.outputs.oldest_added_sql_file}}"
           echo "latest SQL file"
           echo "${{needs.check_latest.outputs.output1}}"
-          if [ ${{needs.check_latest.outputs.output1}} \< ${{steps.find_oldest_added_sql_file.outputs.oldest_added_sql_file}} ]; then
+          if [ ${{needs.check_latest.outputs.output1}} -lt ${{steps.find_oldest_added_sql_file.outputs.oldest_added_sql_file}} ]; then
             echo "Added SQL file is latest."
           else
             echo "Added SQL file is NOT latest."
