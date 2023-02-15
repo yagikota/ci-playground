@@ -9,7 +9,6 @@ on:
       - closed
     # paths:
     #   - 'migrations/**'
-
 jobs:
   # 1. developブランチから最新のmigrationファイルの作成日時を取得
   latest_migration_file:
