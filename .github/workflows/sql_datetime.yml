@@ -10,7 +10,7 @@ on:
     #   - "migrations/**"
 
 jobs:
-  # 1. mainブランチから最新のmigrationファイルの名前を取得
+  # 1. mainブランチから最新のmigrationファイルの作成日時を取得
   check_latest:
     runs-on: ubuntu-latest
     outputs:
@@ -23,7 +23,7 @@ jobs:
       - name: Get latest SQL file
         id: latest_sql_file
         run: |
-          echo "latest_sql_file=$(ls migrations | tail -n 1)" >> $GITHUB_OUTPUT
+          echo "latest_sql_file=$(ls migrations | tail -n 1 | cut -d '-' -f1)" >> $GITHUB_OUTPUT
   # 2. 作成したmigrationファイル名が1で取得した最新のmigrationファイル名よりも後になっているか確認
   check_diff:
     runs-on: ubuntu-latest
@@ -35,17 +35,28 @@ jobs:
           ref: ${{ github.head_ref }}
       - name: Fetch base branch
         run: git fetch origin ${{ github.base_ref }}
-      - name: Find oldest added sql file
+      # 作成したmigrationファイルの内、最も古いものと最新のものを取得
+      - name: Get the date and time of the oldest and newest migration files created.
         id: find_oldest_added_sql_file
         run: |
-          echo "oldest_added_sql_file=$(git diff origin/${{ github.base_ref }} ${{ github.head_ref }} --name-only --relative=migrations '***.sql' | head -n 1)" >> $GITHUB_OUTPUT
+          echo "oldest_added_sql_file=$(git diff origin/${{ github.base_ref }} ${{ github.head_ref }} --name-only --relative=migrations '***.sql' | head -n 1 | cut -d '-' -f1)" >> $GITHUB_OUTPUT
+          echo "newest_added_sql_file=$(git diff origin/${{ github.base_ref }} ${{ github.head_ref }} --name-only --relative=migrations '***.sql' | tail -n 1 | cut -d '-' -f1)" >> $GITHUB_OUTPUT
+      # TODO:
+      - name: Get current date and time
+        env:
+          TZ: "Asia/Tokyo" # タイムゾーンを指定
+        id: date
+        # 当日は許容
+        run: echo "current_date_time=$ date '+%Y%m%d235959')" >> $GITHUB_OUTPUT
       - name: Compare sql files
         run: |
           echo "oldest added sql file"
           echo "${{steps.find_oldest_added_sql_file.outputs.oldest_added_sql_file}}"
+          echo "newest added sql file"
+          echo "${{steps.find_oldest_added_sql_file.outputs.newest_added_sql_file}}"
           echo "latest SQL file"
           echo "${{needs.check_latest.outputs.output1}}"
-          if [ ${{needs.check_latest.outputs.output1}} -lt ${{steps.find_oldest_added_sql_file.outputs.oldest_added_sql_file}} ]; then
+          if [ ${{needs.check_latest.outputs.output1}} \< ${{steps.find_oldest_added_sql_file.outputs.oldest_added_sql_file}} ] &&[ ${{steps.find_oldest_added_sql_file.outputs.newest_added_sql_file}} \< ${{steps.date.outputs.current_date_time}} ]; then
             echo "Added SQL file is latest."
           else
             echo "Added SQL file is NOT latest."
