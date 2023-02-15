@@ -59,7 +59,7 @@ jobs:
             echo "The name of added migration files is correct."
           else
             echo "
-            The name of added migration files is not correct.
+            [Error] The name of added migration files is not correct.
             The date time of added migration file must meet the following requirements:
               - It should be in the future compared to date time of the existing file.
               - It should be today's date time.
