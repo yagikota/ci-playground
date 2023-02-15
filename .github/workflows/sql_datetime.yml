@@ -52,10 +52,10 @@ jobs:
         run: echo "future_limit=$(date '+%Y%m%d235959')" >> $GITHUB_OUTPUT
       - name: Compare date time
         run: |
-          echo "Added migration files:
-          $(git diff origin/${{ github.base_ref }} ${{ github.head_ref }} --name-only --relative=migrations '***.sql')"
           echo "Latest migration file:
           ${{needs.latest_migration_file.outputs.file_name}}"
+          echo "Added migration files:
+          $(git diff origin/${{ github.base_ref }} ${{ github.head_ref }} --name-only --relative=migrations '***.sql')"
           if [ ${{needs.latest_migration_file.outputs.date_time}} \< ${{steps.added_migration_files.outputs.oldest_date_time}} ] && [ ${{steps.added_migration_files.outputs.newest_date_time}} \< ${{steps.date.outputs.future_limit}} ]; then
             echo "The name of added migration files is correct."
           else
@@ -64,6 +64,6 @@ jobs:
             The date time of added migration file must meet the following requirements:
               - It should be in the future compared to date time of the existing file.
               - It should be today's date time.
-            So, is should be greater than ${{needs.latest_migration_file.outputs.date_time}} and less than or equal to ${{steps.date.outputs.today_limit}}."
+            So, is should be greater than ${{needs.latest_migration_file.outputs.date_time}} and less than or equal to ${{steps.date.outputs.future_limit}}."
             exit 1
           fi
