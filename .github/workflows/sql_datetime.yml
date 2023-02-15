@@ -47,7 +47,7 @@ jobs:
           TZ: "Asia/Tokyo" # タイムゾーンを指定
         id: date
         # 当日は許容
-        run: echo "current_date_time=$ date '+%Y%m%d235959')" >> $GITHUB_OUTPUT
+        run: echo "current_date_time=$(date '+%Y%m%d235959')" >> $GITHUB_OUTPUT
       - name: Compare sql files
         run: |
           echo "oldest added sql file"
