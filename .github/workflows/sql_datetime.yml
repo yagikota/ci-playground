@@ -25,7 +25,7 @@ jobs:
         id: latest_migration_file
         run: |
           echo "file_name=$(ls migrations | tail -n 1)" >> $GITHUB_OUTPUT
-          echo "date_time=$(ls migrations | tail -n 1 | cut -c14)" >> $GITHUB_OUTPUT
+          echo "date_time=$(ls migrations | tail -n 1 | cut -c 1-14)" >> $GITHUB_OUTPUT
   # 2. 作成したmigrationファイル名が適切か判定
   check_date_time_constraints:
     runs-on: ubuntu-latest
@@ -41,8 +41,8 @@ jobs:
       - name: Get the date time of the oldest and newest migration files created.
         id: added_migration_files
         run: |
-          echo "oldest_date_time=$(git diff origin/${{ github.base_ref }} ${{ github.head_ref }} --name-only --relative=migrations '***.sql' | head -n 1 | cut -c14)" >> $GITHUB_OUTPUT
-          echo "newest_date_time=$(git diff origin/${{ github.base_ref }} ${{ github.head_ref }} --name-only --relative=migrations '***.sql' | tail -n 1 | cut -c14)" >> $GITHUB_OUTPUT
+          echo "oldest_date_time=$(git diff origin/${{ github.base_ref }} ${{ github.head_ref }} --name-only --relative=migrations '***.sql' | head -n 1 | cut -c 1-14)" >> $GITHUB_OUTPUT
+          echo "newest_date_time=$(git diff origin/${{ github.base_ref }} ${{ github.head_ref }} --name-only --relative=migrations '***.sql' | tail -n 1 | cut -c 1-14)" >> $GITHUB_OUTPUT
       - name: Set future limit
         env:
           TZ: "Asia/Tokyo"
