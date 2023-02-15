@@ -52,9 +52,9 @@ jobs:
       - name: Compare date time
         run: |
           echo "oldest added sql file"
-          echo "${{steps.added_migration_files.outputs.oldest_added_migration_file}}"
+          echo "${{steps.added_migration_files.outputs.oldest_date_time}}"
           echo "newest added sql file"
-          echo "${{steps.added_migration_files.outputs.newest_added_migration_file}}"
+          echo "${{steps.added_migration_files.outputs.newest_date_time}}"
           echo "latest SQL file"
           echo "${{needs.latest_migration_file.outputs.date_time}}"
           if [ ${{needs.latest_migration_file.outputs.date_time}} \< ${{steps.added_migration_files.outputs.oldest_date_time}} ] && [ ${{steps.added_migration_files.outputs.newest_date_time}} \< ${{steps.date.outputs.today_limit}} ]; then
