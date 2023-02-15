@@ -64,6 +64,7 @@ jobs:
             The date time of added migration file must meet the following requirements:
             - It should be in the future compared to date time of the existing file.
             - It should be today's date time."
-            echo "files: $(git diff origin/${{ github.base_ref }} ${{ github.head_ref }} --name-only --relative=migrations '***.sql')"
+            echo "added migration files:
+            $(git diff origin/${{ github.base_ref }} ${{ github.head_ref }} --name-only --relative=migrations '***.sql')"
             exit 1
           fi
