@@ -7,8 +7,8 @@ on:
       - synchronize
       - ready_for_review
       - closed
-    paths:
-      - 'migrations/**'
+    # paths:
+    #   - 'migrations/**'
 
 jobs:
   # 1. developブランチから最新のmigrationファイルの作成日時を取得
