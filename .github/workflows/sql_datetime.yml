@@ -60,10 +60,10 @@ jobs:
           if [ ${{needs.latest_migration_file.outputs.date_time}} \< ${{steps.added_migration_files.outputs.oldest_date_time}} ] && [ ${{steps.added_migration_files.outputs.newest_date_time}} \< ${{steps.date.outputs.today_limit}} ]; then
             echo "The name of Added migration files is correct."
           else
-            echo -e "The name of Added migration files is not correct.\n
-            The date time of added migration file must meet the following requirements:\n
-            It should be in the future compared to date time of the existing file.\n
-            It should be today's date time."
+            echo -e "The name of Added migration files is not correct.
+            The date time of added migration file must meet the following requirements:
+            - It should be in the future compared to date time of the existing file.
+            - It should be today's date time."
             echo "files: $(git diff origin/${{ github.base_ref }} ${{ github.head_ref }} --name-only --relative=migrations '***.sql')"
             exit 1
           fi
