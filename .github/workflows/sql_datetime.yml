@@ -65,6 +65,6 @@ jobs:
             - It should be today's date time.
             So, is should be greater than ${{needs.latest_migration_file.outputs.date_time}} and less than or equal to ${{steps.date.outputs.today_limit}}."
             echo "Added migration files:
-            echo "$(git diff origin/${{ github.base_ref }} ${{ github.head_ref }} --name-only --relative=migrations '***.sql')"
+            $(git diff origin/${{ github.base_ref }} ${{ github.head_ref }} --name-only --relative=migrations '***.sql')"
             exit 1
           fi
