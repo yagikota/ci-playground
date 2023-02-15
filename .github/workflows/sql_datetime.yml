@@ -59,7 +59,7 @@ jobs:
           if [ ${{needs.latest_migration_file.outputs.date_time}} \< ${{steps.added_migration_files.outputs.oldest_date_time}} ] && [ ${{steps.added_migration_files.outputs.newest_date_time}} \< ${{steps.date.outputs.future_limit}} ]; then
             echo "The name of added migration files is correct."
           else
-            echo "
+              echo "
             The name of added migration files is not correct.
             The date time of added migration file must meet the following requirements:
               - It should be in the future compared to date time of the existing file.
