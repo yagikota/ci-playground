@@ -6,13 +6,12 @@ on:
       - reopened
       - synchronize
       - ready_for_review
-      - closed
-    paths:
-      - 'migrations/**'
-
+    # paths:
+    #   - 'migrations/**'
 jobs:
   # 1. developブランチから最新のmigrationファイルの作成日時を取得
   latest_migration_file:
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     outputs:
       file_name: ${{ steps.latest_migration_file.outputs.file_name }}
@@ -26,7 +25,7 @@ jobs:
         id: latest_migration_file
         run: |
           echo "file_name=$(ls migrations | tail -n 1)" >> $GITHUB_OUTPUT
-          echo "date_time=$(ls migrations | tail -n 1 | cut -d '-' -f1)" >> $GITHUB_OUTPUT
+          echo "date_time=$(ls migrations | tail -n 1 | cut -c 1-14)" >> $GITHUB_OUTPUT
   # 2. 作成したmigrationファイル名が適切か判定
   check_date_time_constraints:
     runs-on: ubuntu-latest
@@ -42,14 +41,14 @@ jobs:
       - name: Get the date time of the oldest and newest migration files created.
         id: added_migration_files
         run: |
-          echo "oldest_date_time=$(git diff origin/${{ github.base_ref }} ${{ github.head_ref }} --name-only --relative=migrations '***.sql' | head -n 1 | cut -d '-' -f1)" >> $GITHUB_OUTPUT
-          echo "newest_date_time=$(git diff origin/${{ github.base_ref }} ${{ github.head_ref }} --name-only --relative=migrations '***.sql' | tail -n 1 | cut -d '-' -f1)" >> $GITHUB_OUTPUT
+          echo "oldest_date_time=$(git diff origin/${{ github.base_ref }} ${{ github.head_ref }} --name-only --relative=migrations '***.sql' | head -n 1 | cut -c 1-14)" >> $GITHUB_OUTPUT
+          echo "newest_date_time=$(git diff origin/${{ github.base_ref }} ${{ github.head_ref }} --name-only --relative=migrations '***.sql' | tail -n 1 | cut -c 1-14)" >> $GITHUB_OUTPUT
       - name: Set future limit
         env:
           TZ: "Asia/Tokyo"
         id: date
         # 追加したmigrationファイルの作成日時が当日以内であれば許容する
-        run: echo "future_limit=$(date '+%Y%m%d235959')" >> $GITHUB_OUTPUT
+        run: echo "future_limit=$(date '+%Y%m%d240000')" >> $GITHUB_OUTPUT
       - name: Compare date time
         run: |
           echo "Latest migration file:
@@ -64,6 +63,6 @@ jobs:
             The date time of added migration file must meet the following requirements:
               - It should be in the future compared to date time of the existing file.
               - It should be today's date time.
-            So, it should be greater than ${{needs.latest_migration_file.outputs.date_time}} and less than or equal to ${{steps.date.outputs.future_limit}}."
+            So, it should be greater than ${{needs.latest_migration_file.outputs.date_time}} and less than ${{steps.date.outputs.future_limit}}."
             exit 1
           fi
