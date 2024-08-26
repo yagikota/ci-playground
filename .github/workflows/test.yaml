@@ -1,0 +1,19 @@
+name: Test
+
+on:
+    workflow_dispatch:
+      inputs:
+        environment:
+          required: true
+          options:
+            - 'dev'
+            - 'stg'
+            - 'prod'
+
+jobs:
+  Echo:
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: Echo Hello
+        run: echo "Hello"
